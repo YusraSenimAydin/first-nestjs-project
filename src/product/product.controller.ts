@@ -1,33 +1,39 @@
-import { Controller, Get, Post, Body, Put, Delete } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Param,
+  Put,
+  Delete,
+} from '@nestjs/common';
 import { ProductService } from './product.service';
-import { CreateProductDto, UpdateProductDto } from './product.dto';
 import { Product } from '../schemas/product.schema';
 
 @Controller('products')
 export class ProductController {
-  constructor(private readonly productService: ProductService) {}
+  constructor(private readonly productsService: ProductService) {}
 
-  @Get('/get-all')
-  async findAll() {
-    return this.productService.findAll();
+  @Get('get-all')
+  async getAllProducts(): Promise<Product[]> {
+    return this.productsService.findAll();
   }
 
-  @Post('/add-product')
-  async create(@Body() createProductDto: CreateProductDto): Promise<string> {
-    await this.productService.create(createProductDto);
-    return 'Item added successfully.';
+  @Post('add-product')
+  async createProduct(@Body() productData: any): Promise<Product> {
+    return this.productsService.create(productData);
   }
 
-  @Put('/update-product')
-  async update(@Body() updateProductDto: UpdateProductDto): Promise<string> {
-    await this.productService.update(updateProductDto);
-    return 'Item updated successfully.';
+  @Put('update-product/:id')
+  async updateProduct(
+    @Param('id') productId: string,
+    @Body() productData: any,
+  ): Promise<Product> {
+    return this.productsService.update(productId, productData);
   }
 
-  @Delete('/delete-product')
-  async delete(@Body('productId') productId: string): Promise<string> {
-    await this.productService.delete(productId);
-    return 'Item deleted successfully.';
+  @Delete('delete-product/:id')
+  async deleteProduct(@Param('id') productId: string): Promise<Product> {
+    return this.productsService.delete(productId);
   }
 }
-export { Product };

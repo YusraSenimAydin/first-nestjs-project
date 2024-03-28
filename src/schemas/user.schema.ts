@@ -1,5 +1,9 @@
+// src/users/user.schema.ts
+
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
+
+export type UserDocument = User & Document;
 
 @Schema({ timestamps: true })
 export class User {
@@ -13,5 +17,4 @@ export class User {
   password: string;
 }
 
-export type UserDocument = User & Document;
 export const UserSchema = SchemaFactory.createForClass(User);
