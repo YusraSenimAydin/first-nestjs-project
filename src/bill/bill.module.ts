@@ -1,13 +1,11 @@
 import { Module } from '@nestjs/common';
 import { BillService } from './bill.service';
 import { BillController } from './bill.controller';
-import { Bill, BillSchema } from '../schemas/bill.schema';
-import { MongooseModule } from '@nestjs/mongoose';
+import { Bill } from '../typeorm/bill.entity';
+import { TypeOrmModule } from '@nestjs/typeorm';
 
 @Module({
-  imports: [
-    MongooseModule.forFeature([{ name: Bill.name, schema: BillSchema }]),
-  ],
+  imports: [TypeOrmModule.forFeature([Bill])],
   providers: [BillService],
   controllers: [BillController],
   exports: [BillService],

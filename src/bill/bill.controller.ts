@@ -1,6 +1,7 @@
 import { Controller, Get, Post, Body } from '@nestjs/common';
 import { BillService } from './bill.service';
-import { Bill } from '../schemas/bill.schema';
+import { Bill } from '../typeorm/bill.entity';
+import { CreateBillDto } from './CreateBillDto.dto';
 
 @Controller('bills')
 export class BillController {
@@ -12,7 +13,7 @@ export class BillController {
   }
 
   @Post('add-bill')
-  async createBill(@Body() billData: any): Promise<Bill> {
-    return this.billsService.create(billData);
+  async createBill(@Body() createBillDto: CreateBillDto): Promise<Bill> {
+    return this.billsService.create(createBillDto);
   }
 }

@@ -1,31 +1,50 @@
-import { Injectable } from '@nestjs/common';
-import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
-import { Category, CategoryDocument } from '../schemas/category.schema';
+import { Injectable, NotFoundException } from '@nestjs/common';
+import { Category } from '../typeorm/category.entity';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+import { CreateCategoryDto, UpdateCategoryDto } from './CreateCategoryDto.dto';
 
 @Injectable()
 export class CategoryService {
   constructor(
-    @InjectModel(Category.name)
-    private readonly categoryModel: Model<CategoryDocument>,
+    @InjectRepository(Category)
+    private readonly categoryRepository: Repository<Category>,
   ) {}
 
   async findAll(): Promise<Category[]> {
-    return this.categoryModel.find().exec();
+    return this.categoryRepository.find();
   }
 
-  async create(categoryData: any): Promise<Category> {
-    const createdCategory = new this.categoryModel(categoryData);
-    return createdCategory.save();
+  async create(createCategoryDto: CreateCategoryDto): Promise<Category> {
+    const createdCategory = this.categoryRepository.create(createCategoryDto);
+    return await this.categoryRepository.save(createdCategory);
   }
 
-  async update(categoryId: string, categoryData: any): Promise<Category> {
-    return this.categoryModel
-      .findByIdAndUpdate(categoryId, categoryData, { new: true })
-      .exec();
+  async update(
+    categoryId: number,
+    updateCategoryDto: UpdateCategoryDto,
+  ): Promise<Category> {
+    const categoryToUpdate = await this.categoryRepository.findOne({
+      where: {
+        id: categoryId,
+      },
+    });
+    if (!categoryToUpdate) {
+      throw new NotFoundException('No such category');
+    }
+    Object.assign(categoryToUpdate, updateCategoryDto);
+    return this.categoryRepository.save(categoryToUpdate);
   }
 
-  async delete(categoryId: string): Promise<Category> {
-    return this.categoryModel.findByIdAndDelete(categoryId).exec();
+  async delete(categoryId: number): Promise<void> {
+    const categoryToDelete = await this.categoryRepository.findOne({
+      where: {
+        id: categoryId,
+      },
+    });
+    if (!categoryToDelete) {
+      throw new NotFoundException('No such category');
+    }
+    await this.categoryRepository.delete(categoryId);
   }
 }

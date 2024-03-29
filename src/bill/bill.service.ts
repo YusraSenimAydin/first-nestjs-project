@@ -1,20 +1,22 @@
 import { Injectable } from '@nestjs/common';
-import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
-import { Bill, BillDocument } from '../schemas/bill.schema';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+import { Bill } from '../typeorm/bill.entity';
+import { CreateBillDto } from './CreateBillDto.dto';
 
 @Injectable()
 export class BillService {
   constructor(
-    @InjectModel(Bill.name) private readonly billModel: Model<BillDocument>,
+    @InjectRepository(Bill)
+    private readonly billRepository: Repository<Bill>,
   ) {}
 
   async findAll(): Promise<Bill[]> {
-    return this.billModel.find().exec();
+    return this.billRepository.find();
   }
 
-  async create(billData: any): Promise<Bill> {
-    const createdBill = new this.billModel(billData);
-    return createdBill.save();
+  async create(createBillDto: CreateBillDto): Promise<Bill> {
+    const newBill = this.billRepository.create(createBillDto);
+    return this.billRepository.save(newBill);
   }
 }

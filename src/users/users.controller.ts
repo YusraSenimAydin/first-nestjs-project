@@ -1,23 +1,33 @@
-import { Controller, Get, Post, Body, Param } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Param,
+  ParseIntPipe,
+  UsePipes,
+  ValidationPipe,
+} from '@nestjs/common';
 import { UsersService } from './users.service';
-import { User } from '../schemas/user.schema';
+import { CreateUserDto } from './CreateUser.dto';
 
 @Controller('users')
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
   @Get('get-all')
-  async getAllUsers(): Promise<User[]> {
+  async getAllUsers() {
     return this.usersService.findAll();
   }
 
   @Get(':id')
-  async getUserById(@Param('id') userId: string): Promise<User> {
-    return this.usersService.findById(userId);
+  async getUserById(@Param('id', ParseIntPipe) id: number) {
+    return this.usersService.findById(id);
   }
 
-  @Post()
-  async createUser(@Body() userData: any): Promise<User> {
-    return this.usersService.create(userData);
+  @Post('create')
+  @UsePipes(ValidationPipe)
+  async createUser(@Body() createUserDto: CreateUserDto) {
+    return this.usersService.create(createUserDto);
   }
 }

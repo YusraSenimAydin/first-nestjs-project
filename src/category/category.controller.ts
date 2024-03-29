@@ -8,7 +8,8 @@ import {
   Delete,
 } from '@nestjs/common';
 import { CategoryService } from './category.service';
-import { Category } from '../schemas/category.schema';
+import { Category } from '../typeorm/category.entity';
+import { CreateCategoryDto, UpdateCategoryDto } from './CreateCategoryDto.dto';
 
 @Controller('categories')
 export class CategoryController {
@@ -20,20 +21,22 @@ export class CategoryController {
   }
 
   @Post('add-category')
-  async createCategory(@Body() categoryData: any): Promise<Category> {
-    return this.categoriesService.create(categoryData);
+  async createCategory(
+    @Body() createCategoryDto: CreateCategoryDto,
+  ): Promise<Category> {
+    return this.categoriesService.create(createCategoryDto);
   }
 
   @Put('update-category/:id')
   async updateCategory(
-    @Param('id') categoryId: string,
-    @Body() categoryData: any,
+    @Param('id') categoryId: number,
+    @Body() updateCategoryDto: UpdateCategoryDto,
   ): Promise<Category> {
-    return this.categoriesService.update(categoryId, categoryData);
+    return this.categoriesService.update(categoryId, updateCategoryDto);
   }
 
   @Delete('delete-category/:id')
-  async deleteCategory(@Param('id') categoryId: string): Promise<Category> {
+  async deleteCategory(@Param('id') categoryId: number): Promise<void> {
     return this.categoriesService.delete(categoryId);
   }
 }
