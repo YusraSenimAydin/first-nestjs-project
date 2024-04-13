@@ -21,12 +21,12 @@ export class ProductService {
   }
 
   async update(
-    productId: number,
+    id: number,
     updateProductDto: UpdateProductDto,
   ): Promise<Product> {
     const productToUpdate = await this.productRepository.findOne({
       where: {
-        productId,
+        id,
       },
     });
     if (!productToUpdate) {
@@ -36,15 +36,15 @@ export class ProductService {
     return this.productRepository.save(productToUpdate);
   }
 
-  async delete(productId: number): Promise<void> {
+  async delete(id: number): Promise<void> {
     const productToDelete = await this.productRepository.findOne({
       where: {
-        productId,
+        id,
       },
     });
     if (!productToDelete) {
       throw new NotFoundException('No such product');
     }
-    await this.productRepository.delete(productId);
+    await this.productRepository.delete(id);
   }
 }

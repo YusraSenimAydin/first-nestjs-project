@@ -6,11 +6,9 @@ import { CategoryModule } from './category/category.module';
 import { ProductModule } from './product/product.module';
 import { BillModule } from './bill/bill.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { AuthService } from './auth/auth.service';
 import { AuthModule } from './auth/auth.module';
 import entities from './typeorm';
-import { JwtModule } from '@nestjs/jwt';
-import { jwtConstants } from './auth/constants';
+import { JwtStrategy } from './auth/jwt/jwt.strategy';
 
 @Module({
   imports: [
@@ -24,10 +22,6 @@ import { jwtConstants } from './auth/constants';
       entities: entities,
       synchronize: true,
     }),
-    JwtModule.register({
-      secret: jwtConstants.secret,
-      signOptions: { expiresIn: '1h' },
-    }),
     AuthModule,
     UserModule,
     CategoryModule,
@@ -36,6 +30,6 @@ import { jwtConstants } from './auth/constants';
     AuthModule,
   ],
   controllers: [AppController],
-  providers: [AppService, AuthService],
+  providers: [AppService, JwtStrategy],
 })
 export class AppModule {}

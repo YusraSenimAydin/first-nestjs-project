@@ -2,8 +2,8 @@ import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity()
 export class Bill {
-  @PrimaryGeneratedColumn()
-  bill_id: string;
+  @PrimaryGeneratedColumn({ type: 'bigint', name: 'bill_id' })
+  id: string;
 
   @Column()
   customerName: string;

@@ -6,7 +6,7 @@ export class Product {
     type: 'bigint',
     name: 'product_id',
   })
-  productId: number;
+  id: number;
   @Column({ nullable: true })
   title: string;
 
