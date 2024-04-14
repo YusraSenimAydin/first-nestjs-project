@@ -22,4 +22,6 @@ export class Bill {
 
   @Column()
   totalAmount: number;
+
+  //cartitems array eklemelisin
 }
